@@ -18,10 +18,17 @@ socket.on('user', function(data){
   console.log('name: ' + data);
 });
 
+    socket.on('time', function(time){
+    io.emit('time', time);
+    console.log(time);
+    });
+    
   socket.on('chat message', function(msg){
     io.emit('chat message', msg);
     console.log('message: ' + msg);
   });
+
+
 
   socket.on('disconnect', function(socket){
     console.log('a user disconnected');

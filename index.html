@@ -6,19 +6,14 @@
 
   <style>
 
-    html, input {
-    font-family:
-        "HelveticaNeue-Light",
-        "Helvetica Neue Light",
-        "Helvetica Neue",
-        Helvetica,
-        Arial,
-        "Lucida Grande",
-        sans-serif;
-      }
-      * {
-        margin: 0;
-        padding: 0;
+      body {
+          background: none repeat scroll 0 0 #fff;
+          color: black;
+          font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+          font-weight: 300;
+          line-height: 26px;
+          width: auto;
+          margin: 0 auto;
       }
 
       h1{
@@ -26,67 +21,72 @@
         text-align: center;
         margin-top: 150px;
       }
+      
       .username_form {
         text-align: center;
-        background-color: black;
         position: absolute;
         text-align: center;
         top: 50%;
         height: 100%;
         width: 100%;
       }
+      
       .username_form input {
         margin-top: 10px;
         font-size: 200%;
         letter-spacing: 0px;
         text-align: center;
         outline: none;
-        border: none;
-
+        border:none;
+        background-color: aliceblue;
       }
-      .username_form button {
 
-
-      }
       .chat_form {
         display: none;
-        background: #000;
-        padding: 3px;
+        background-color: aliceblue;
         position: fixed;
         bottom: 0;
+        padding-top: 7px;
         width: 100%;
       }
+      
       .chat_form input {
-        border: 0;
-        padding: 10px;
-        width: 90%;
+        background-color: aliceblue;
+        padding-bottom: 20px;
+        border:none;
+        width: 88%;
       }
-      .chat_form button {
-        width: 5%;
+      
+      .button {
+        background-color: #008CBA; 
         border: none;
-        padding: 10px;
+        color: black;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        width: 10%;
       }
+
       #messages {
         display: none;
         list-style-type: none;
         padding: 0;
       }
+      
       #messages li {
-        padding: 10px 50px;
-        border-left: 6px solid lightblue;
         background-color: lightgrey;
-        margin-bottom: 30px;
-
-
+        border-radius: 20px 20px 20px 20px;
+        margin: 0 15px 10px;
+        padding: 15px 50px;
+        position: relative;
       }
       
       #messages span {
-        padding: 5px 10px;
-        background: rgb(130, 224, 255);
-        
-
+        padding: 15px 20px;
       }
-
 
   </style>
 </head>
@@ -101,7 +101,7 @@
 
 <form id="chat" class="chat_form" action="">
   <input id="m" />
-  <button type="submit" value="Send" />
+  <button type="submit" class="button">Enter</button>
 </form>
 
 
@@ -120,19 +120,29 @@ $(function () {
       $(".chat_form").show();
       return false;
     });
+    
+    var date = new Date();
+    var time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
 
     $('.chat_form').submit(function(){
       socket.emit('user', username);
       $('#n').val('');
 
+      socket.emit('time', time);
+
       socket.emit('chat message', $('#m').val());
       $('#m').val('');
+        
+
       return false;
     });
 
     socket.on('user', function(data){
       $('#messages').append($('<span>').text(data));
+    });
+    socket.on('time', function(data){
+      $('#messages').append($('<span>').text(time));
     });
 
     socket.on('chat message', function(msg){
