@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Chatroom</title>
+
+  <style>
+
+    html, input {
+    font-family:
+        "HelveticaNeue-Light",
+        "Helvetica Neue Light",
+        "Helvetica Neue",
+        Helvetica,
+        Arial,
+        "Lucida Grande",
+        sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      h1{
+        font-size: 70px;
+        text-align: center;
+        margin-top: 150px;
+      }
+      .username_form {
+        text-align: center;
+        background-color: black;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        height: 100%;
+        width: 100%;
+      }
+      .username_form input {
+        margin-top: 10px;
+        font-size: 200%;
+        letter-spacing: 0px;
+        text-align: center;
+        outline: none;
+        border: none;
+
+      }
+      .username_form button {
+
+
+      }
+      .chat_form {
+        display: none;
+        background: #000;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+      .chat_form input {
+        border: 0;
+        padding: 10px;
+        width: 90%;
+      }
+      .chat_form button {
+        width: 5%;
+        border: none;
+        padding: 10px;
+      }
+      #messages {
+        display: none;
+        list-style-type: none;
+        padding: 0;
+      }
+      #messages li {
+        padding: 10px 50px;
+        border-left: 6px solid lightblue;
+        background-color: lightgrey;
+        margin-bottom: 30px;
+
+
+      }
+      
+      #messages span {
+        padding: 5px 10px;
+        background: rgb(130, 224, 255);
+        
+
+      }
+
+
+  </style>
+</head>
+<body>
+<h1>Chatroom</h1>
+<form class="username_form" action="">
+  <input type="text" id="n" placeholder="Enter your name here!"/>
+  <input type="submit" value="Join" />
+</form>
+
+<ul id="messages"></ul>
+
+<form id="chat" class="chat_form" action="">
+  <input id="m" />
+  <button type="submit" value="Send" />
+</form>
+
+
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="socket.io/socket.io.js"></script>
+<script>
+
+$(function () {
+    var socket = io();
+    var username;
+    $(".username_form").submit(function(){
+     username = $(this).children("input").val();
+      $(this).remove();
+      $('h1').hide();
+      $("#messages").show();
+      $(".chat_form").show();
+      return false;
+    });
+
+
+    $('.chat_form').submit(function(){
+      socket.emit('user', username);
+      $('#n').val('');
+
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+
+    socket.on('user', function(data){
+      $('#messages').append($('<span>').text(data));
+    });
+
+    socket.on('chat message', function(msg){
+      $('#messages').append($('<li>').text(msg));
+    });
+  });
+
+</script>
+</body>
+</html>
